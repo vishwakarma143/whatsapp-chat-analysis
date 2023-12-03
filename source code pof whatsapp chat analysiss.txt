@@ -1,0 +1,264 @@
+from google.colab import files
+import pandas as pd
+from datetime import datetime
+
+# Function to parse the timestamp
+def parse_timestamp(timestamp):
+    try:
+        return datetime.strptime(timestamp, '%d/%m/%y, %I:%M\u202f%p')
+    except ValueError:
+        # Handle the case where the timestamp doesn't match the expected format
+        print(f"Skipping invalid timestamp: {timestamp}")
+        return None
+
+# Function to read and process the chat file
+def read_chat(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    data = {'timestamp': [], 'sender': [], 'message': []}
+
+    for line in lines:
+        # Split the line into timestamp, sender, and message
+        parts = line.split(' ', 2)
+
+        # Check if there are enough parts to unpack
+        if len(parts) == 3:
+            timestamp = parse_timestamp(parts[0] + ' ' + parts[1])
+
+            if timestamp is not None:
+                # Split the sender and message, but handle the case where there might not be a ': ' in the line
+                sender_message_parts = parts[2].split(': ', 1)
+                
+                if len(sender_message_parts) == 2:
+                    sender, message = sender_message_parts
+                    
+                    data['timestamp'].append(timestamp)
+                    data['sender'].append(sender)
+                    data['message'].append(message)
+                else:
+                    print(f"Skipped line: {line}")
+        else:
+            print(f"Skipped line: {line}")
+
+    return pd.DataFrame(data)
+
+# Upload the chat file
+uploaded = files.upload()
+
+# Read the uploaded chat file
+file_path = list(uploaded.keys())[0]
+df = read_chat(file_path)
+import pandas as pd
+import matplotlib.pyplot as plt
+from collections import Counter
+import nltk
+from nltk.corpus import stopwords
+from wordcloud import WordCloud
+from google.colab import files
+
+# Download NLTK resources
+nltk.download('punkt')
+nltk.download('stopwords')
+
+def analyze_word_frequency(chat_content):
+    # Convert chat content to lowercase
+    chat_content_lower = chat_content.lower()
+
+    # Tokenize the text
+    words = nltk.word_tokenize(chat_content_lower)
+
+    # Remove stop words
+    stop_words = set(stopwords.words('english'))
+    words = [word for word in words if word.isalnum() and word not in stop_words]
+
+    # Count the occurrence of each word
+    word_counts = Counter(words)
+
+    # Plot the top 10 most used words
+    top_10_words = word_counts.most_common(10)
+    top_10_words_df = pd.DataFrame(top_10_words, columns=['Word', 'Count'])
+    
+    # Plot bar chart
+    plt.bar(top_10_words_df['Word'], top_10_words_df['Count'], color='skyblue')
+    plt.title('Top 10 Most Used Words')
+    plt.xlabel('Word')
+    plt.ylabel('Count')
+    plt.xticks(rotation=45, ha='right')
+    plt.show()
+
+    # Generate word cloud
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(word_counts)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title('Word Cloud of Chat')
+    plt.show()
+
+# Upload WhatsApp chat file
+uploaded = files.upload()
+
+# Assuming you uploaded a file named 'your_chat.txt'
+file_key = list(uploaded.keys())[0]
+chat_content = uploaded[file_key].decode('utf-8')
+
+# Analyze word frequency in the chat
+analyze_word_frequency(chat_content)
+
+from google.colab import files
+import pandas as pd
+from datetime import datetime
+
+# Function to parse the timestamp
+def parse_timestamp(timestamp):
+    try:
+        return datetime.strptime(timestamp, '%d/%m/%y, %I:%M\u202f%p')
+    except ValueError:
+        # Handle the case where the timestamp doesn't match the expected format
+        print(f"Skipping invalid timestamp: {timestamp}")
+        return None
+
+# Function to read and process the chat file
+def read_chat(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    data = {'timestamp': [], 'sender': [], 'message': []}
+
+    for line in lines:
+        # Split the line into timestamp, sender, and message
+        parts = line.split(' ', 2)
+
+        # Check if there are enough parts to unpack
+        if len(parts) == 3:
+            timestamp = parse_timestamp(parts[0] + ' ' + parts[1])
+
+            if timestamp is not None:
+                # Split the sender and message, but handle the case where there might not be a ': ' in the line
+                sender_message_parts = parts[2].split(': ', 1)
+                
+                if len(sender_message_parts) == 2:
+                    sender, message = sender_message_parts
+                    
+                    data['timestamp'].append(timestamp)
+                    data['sender'].append(sender)
+                    data['message'].append(message)
+                else:
+                    print(f"Skipped line: {line}")
+        else:
+            print(f"Skipped line: {line}")
+
+    return pd.DataFrame(data)
+
+# Upload the chat file
+uploaded = files.upload()
+
+# Read the uploaded chat file
+file_path = list(uploaded.keys())[0]
+df = read_chat(file_path)
+from google.colab import files
+import pandas as pd
+from datetime import datetime
+
+# Function to parse the timestamp
+def parse_timestamp(timestamp):
+    try:
+        return datetime.strptime(timestamp, '%d/%m/%y, %I:%M\u202f%p')
+    except ValueError:
+        # Handle the case where the timestamp doesn't match the expected format
+        print(f"Skipping invalid timestamp: {timestamp}")
+        return None
+
+# Function to read and process the chat file
+def read_chat(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    data = {'timestamp': [], 'sender': [], 'message': []}
+
+    for line in lines:
+        # Split the line into timestamp, sender, and message
+        parts = line.split(' ', 2)
+
+        # Check if there are enough parts to unpack
+        if len(parts) == 3:
+            timestamp = parse_timestamp(parts[0] + ' ' + parts[1])
+
+            if timestamp is not None:
+                # Split the sender and message, but handle the case where there might not be a ': ' in the line
+                sender_message_parts = parts[2].split(': ', 1)
+                
+                if len(sender_message_parts) == 2:
+                    sender, message = sender_message_parts
+                    
+                    data['timestamp'].append(timestamp)
+                    data['sender'].append(sender)
+                    data['message'].append(message)
+                else:
+                    print(f"Skipped line: {line}")
+        else:
+            print(f"Skipped line: {line}")
+
+    return pd.DataFrame(data)
+
+# Upload the chat file
+uploaded = files.upload()
+
+# Read the uploaded chat file
+file_path = list(uploaded.keys())[0]
+df = read_chat(file_path)
+import pandas as pd
+import matplotlib.pyplot as plt
+from collections import Counter
+import nltk
+from nltk.corpus import stopwords
+from wordcloud import WordCloud
+from google.colab import files
+
+# Download NLTK resources
+nltk.download('punkt')
+nltk.download('stopwords')
+
+def analyze_word_frequency(chat_content):
+    # Convert chat content to lowercase
+    chat_content_lower = chat_content.lower()
+
+    # Tokenize the text
+    words = nltk.word_tokenize(chat_content_lower)
+
+    # Remove stop words
+    stop_words = set(stopwords.words('english'))
+    words = [word for word in words if word.isalnum() and word not in stop_words]
+
+    # Count the occurrence of each word
+    word_counts = Counter(words)
+
+    # Plot the top 10 most used words
+    top_10_words = word_counts.most_common(10)
+    top_10_words_df = pd.DataFrame(top_10_words, columns=['Word', 'Count'])
+    
+    # Plot bar chart
+    plt.bar(top_10_words_df['Word'], top_10_words_df['Count'], color='skyblue')
+    plt.title('Top 10 Most Used Words')
+    plt.xlabel('Word')
+    plt.ylabel('Count')
+    plt.xticks(rotation=45, ha='right')
+    plt.show()
+
+    # Generate word cloud
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(word_counts)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title('Word Cloud of Chat')
+    plt.show()
+
+# Upload WhatsApp chat file
+uploaded = files.upload()
+
+# Assuming you uploaded a file named 'your_chat.txt'
+file_key = list(uploaded.keys())[0]
+chat_content = uploaded[file_key].decode('utf-8')
+
+# Analyze word frequency in the chat
+analyze_word_frequency(chat_content)
